@@ -17,6 +17,6 @@ router.route('/users/:id')
     .delete(eliminarUsuario);
 
 router.route('/login')
-    .get(login);
+    .post(login);
 
 export default router;    

@@ -1,5 +1,4 @@
 import Product from "../models/productsSchema.js";
-import { validationResult } from 'express-validator';
 
 export const obtenerProductos = async (req, res) => {
   try {
@@ -31,15 +30,6 @@ export const obtenerUnProducto = async (req, res) => {
 };
 
 export const crearProducto = async (req, res) => {
-  // Verificar errores de validación ANTES del try-catch
-  const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({ 
-      mensaje: "Datos de entrada no válidos",
-      errores: errors.array() 
-    });
-  }
-  
   try {
     const nuevoProducto = new Product(req.body);
     await nuevoProducto.save();
@@ -61,15 +51,6 @@ export const crearProducto = async (req, res) => {
 };
 
 export const actualizarProducto = async (req, res) => {
-  // Verificar errores de validación
-  const errors = validationResult(req);
-  if(!errors.isEmpty()){
-    return res.status(400).json({ 
-      mensaje: "Datos de entrada no válidos",
-      errores: errors.array() 
-    });
-  }
-
   try {
     const productoActualizado = await Product.findByIdAndUpdate(
       req.params.id, 
