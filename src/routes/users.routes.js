@@ -5,9 +5,11 @@ import validarUsuario from '../helpers/validarUsuario';
 
 const router = Router();
 
+
+
 router.route('/users')
     .get(obtenerUsuarios)
-    .post(validarUsuario,crearUsuario);
+    .post(validarUsuario, crearUsuario);
 
 router.route('/users/:id')
     .get(obtenerUnUsuario)
