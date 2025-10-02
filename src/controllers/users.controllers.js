@@ -1,3 +1,4 @@
+import generarToken from "../auth/token-sign";
 import User from "../models/usersSchema";
 import bcrypt from "bcrypt";
 
@@ -33,32 +34,7 @@ export const crearUsuario = async (req, res) => {
   }
 };
 
-// export const crearUsuario = async (req, res) => {
-//   try {
-//     const { nombreUsuario, email, rol } = req.body;
-//     const esAdministrador = req.rol == 'administrador';
 
-//     if ((!esAdministrador && rol === 'administrador')) {
-//       return res.status(403).json({
-//         mensaje: 'Acceso denegado. Solo los administradores pueden realizar esta acción.',
-//       });
-//     }
-//       const usuarioNuevo = new Usuario(req.body);
-//       const salt = bcrypt.genSaltSync()
-//       usuarioNuevo.password = bcrypt.hashSync(usuarioNuevo.password, salt)
-//       await usuarioNuevo.save();
-//       res.status(201).json({
-//         mensaje: "El usuario fué creado.",
-//       });
-//     }
-
-//    catch (error) {
-//     console.log(error);
-//     res.status(404).json({
-//       mensaje: "Error al crear usuario.",
-//     });
-//   }
-// };
 export const actualizarUsuario = async (req, res) => {
   try {
     await User.findByIdAndUpdate(req.params.id, req.body);
@@ -109,7 +85,22 @@ export const login = async (req, res) => {
       });
     }
 
-    res.status(200).json(usuario)
+    const token = await generarToken(usuario._id, usuario.name, usuario.role)
+
+    res.cookie('jwt',token,{
+      httpOnly:true,
+      sameSite:true,
+      maxAge: 3600000 //1 hora
+    })
+
+    res.status(200).json({
+      mensaje: "Login exitoso",
+      nombreUsuario: usuario.name,
+      idUsuario: usuario._id,
+      rol: usuario.role,
+      token: token
+
+    })
   } catch (error) {
     console.log(error);
     res.status(404).json("Error al loguear un usuario");
