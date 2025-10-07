@@ -1,0 +1,18 @@
+
+{
+  "plugins": ["node_modules/jsdoc-babel"],
+  "source": {
+    "include": ["src/controllers/products.controllers.js"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "destination": "docs",
+    "recurse": true,
+    "template": "node_modules/minami"
+  },
+  "babel": {
+    "extensions": ["js"],
+    "presets": ["@babel/preset-env"]
+  }
+}
