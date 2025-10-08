@@ -1,6 +1,7 @@
 import generarToken from "../auth/token-sign";
 import User from "../models/usersSchema";
 import bcrypt from "bcrypt";
+import { validationResult } from "express-validator";
 
 export const obtenerUsuarios = async (req, res) => {
   // Lógica para obtener usuarios
@@ -30,6 +31,23 @@ export const crearUsuario = async (req, res) => {
     console.error(error);
     res.status(500).json({
       mensaje: "Error interno del servidor al crear usuario",
+    });
+  }
+};
+
+export const obtenerUnUsuario = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({
+        mensaje: "Usuario no encontrado",
+      });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error interno del servidor al obtener el usuario",
     });
   }
 };
@@ -65,7 +83,6 @@ export const eliminarUsuario = async (req, res) => {
   }
 };
 
-export const obtenerUnUsuario = (req, res) => {};
 
 export const login = async (req, res) => {
   try {
@@ -85,7 +102,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const token = await generarToken(usuario._id, usuario.name, usuario.role)
+    const token = await generarToken(usuario._id, usuario.username, usuario.role)
 
     res.cookie('jwt',token,{
       httpOnly:true,
@@ -95,14 +112,52 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       mensaje: "Login exitoso",
-      nombreUsuario: usuario.name,
-      idUsuario: usuario._id,
-      rol: usuario.role,
-      
-
+      user: {
+        id: usuario._id, // Agregar el ID del usuario
+        username: usuario.username,
+        email: usuario.email,
+        role: usuario.role,
+        preferences: usuario.preferences
+      }
     })
   } catch (error) {
     console.log(error);
     res.status(404).json("Error al loguear un usuario");
   }
 };
+
+
+
+
+export const getMe = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).select('username email role preferences');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({
+      id: userId, // Agregar el ID del usuario
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      preferences: user.preferences
+    });
+  } catch (err) {
+    console.error('Error in /me:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+
+
+export const logout = (req, res) => {
+  res.cookie('jwt','',{
+    httpOnly:true,
+    sameSite:true,
+    expires: new Date(0)
+  })
+  res.status(200).json({
+    mensaje: "Logout exitoso"
+  })
+}

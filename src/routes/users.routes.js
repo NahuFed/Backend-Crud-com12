@@ -1,8 +1,9 @@
 import {Router} from 'express';
-import { obtenerUsuarios, crearUsuario,actualizarUsuario,eliminarUsuario, obtenerUnUsuario, login  } from '../controllers/users.controllers';
+import { obtenerUsuarios, crearUsuario,actualizarUsuario,eliminarUsuario, obtenerUnUsuario, login, logout, getMe  } from '../controllers/users.controllers';
 import validarUsuario from '../helpers/validarUsuario';
 import verificarToken from '../auth/token-verify.js';
 import verificarRol from '../auth/verificar-rol.js';
+
 
 const router = Router();
 
@@ -24,11 +25,17 @@ router.route('/verify')
         res.status(200).json({
             success: true,
             user: {
-                id: req.id,
-                name: req.nombre,
-                role: req.rol
+                id: req.user.id,
+                username: req.user.username,
+                role: req.user.role
             }
         });
     });
+
+ router.route('/logout')
+    .post(verificarToken, logout); // Proteger logout
+
+ router.route('/me')    
+    .get(verificarToken, getMe);
 
 export default router;    
