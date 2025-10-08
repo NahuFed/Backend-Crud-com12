@@ -98,7 +98,7 @@ export const login = async (req, res) => {
       nombreUsuario: usuario.name,
       idUsuario: usuario._id,
       rol: usuario.role,
-      token: token
+      
 
     })
   } catch (error) {

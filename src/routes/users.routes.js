@@ -2,6 +2,7 @@ import {Router} from 'express';
 import { obtenerUsuarios, crearUsuario,actualizarUsuario,eliminarUsuario, obtenerUnUsuario, login  } from '../controllers/users.controllers';
 import validarUsuario from '../helpers/validarUsuario';
 import verificarToken from '../auth/token-verify.js';
+import verificarRol from '../auth/verificar-rol.js';
 
 const router = Router();
 

@@ -7,7 +7,7 @@ import verificarRol from '../auth/verificar-rol.js';
 const router = Router();
 
 router.route('/products')
-    .get(verificarToken, obtenerProductos)
+    .get(obtenerProductos)
     .post(verificarToken, verificarRol('admin'), validarProducto, crearProducto);
 
 router.route('/products/:id')
