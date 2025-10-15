@@ -2,10 +2,30 @@ import Sale from '../models/salesSchema.js';
 import Product from '../models/productsSchema.js';
 import User from '../models/usersSchema.js';
 
+// Función helper para transformar el formato de las ventas
+const transformSaleFormat = (sale) => {
+    return {
+        id: sale._id.toString(),
+        items: sale.items.map(item => ({
+            id: item.productId._id.toString(),
+            name: item.productId.name,
+            price: item.priceAtSale,
+            quantity: item.quantity
+        })),
+        total: sale.total,
+        customerInfo: {
+            name: sale.userId.username,
+            email: sale.userId.email
+        },
+        date: sale.date
+    };
+};
+
 export const obtenerVentas = async (req, res) => {
     try {
         const sales = await Sale.find().populate('userId', 'username email').populate('items.productId', 'name');
-        res.status(200).json(sales);
+        const transformedSales = sales.map(transformSaleFormat);
+        res.status(200).json({ sales: transformedSales });
     } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error interno del servidor al obtener ventas' });
@@ -19,7 +39,8 @@ export const obtenerUnaVenta = async (req, res) => {
         if (!sale) {
             return res.status(404).json({ mensaje: 'Venta no encontrada' });
         }
-        res.status(200).json(sale);
+        const transformedSale = transformSaleFormat(sale);
+        res.status(200).json(transformedSale);
     } catch (error) {
         console.error(error);
         res.status(500).json({ mensaje: 'Error interno del servidor al obtener la venta' });
@@ -77,9 +98,11 @@ export const crearVenta = async (req, res) => {
             .populate('userId', 'username email')
             .populate('items.productId', 'name');
             
+        const transformedSale = transformSaleFormat(saleWithDetails);
+            
         res.status(201).json({ 
             mensaje: 'Venta creada exitosamente', 
-            sale: saleWithDetails 
+            sale: transformedSale 
         });
         
     } catch (error) {

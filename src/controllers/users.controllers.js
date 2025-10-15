@@ -1,5 +1,5 @@
-import generarToken from "../auth/token-sign";
-import User from "../models/usersSchema";
+import generarToken from "../auth/token-sign.js";
+import User from "../models/usersSchema.js";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 
@@ -86,30 +86,52 @@ export const eliminarUsuario = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email } = req.body;
+    console.log('🔍 Inicio del proceso de login');
+    console.log('📧 Request body:', req.body);
+    
+    const { email, password } = req.body;
+    
+    console.log('📧 Email recibido:', email);
+    console.log('🔑 Password recibido:', password ? 'Sí se recibió password' : 'No se recibió password');
+    
+    // Buscar usuario por email
+    console.log('🔍 Buscando usuario en la base de datos...');
     let usuario = await User.findOne({ email });
+    console.log('👤 Usuario encontrado:', usuario ? `Sí - ID: ${usuario._id}` : 'No');
+    
     if (!usuario) {
+      console.log('❌ Usuario no encontrado con email:', email);
       return res.status(404).json({
         mensaje: "Correo o password invalido (correo)",
       });
     }
 
-    const passwordValido = bcrypt.compareSync(req.body.password, usuario.password)
+    console.log('🔑 Verificando password...');
+    console.log('🔑 Password del usuario en BD (hash):', usuario.password);
+    console.log('🔑 Password del request:', password);
+    
+    const passwordValido = bcrypt.compareSync(password, usuario.password);
+    console.log('✅ Password válido:', passwordValido);
 
     if (!passwordValido) {
+      console.log('❌ Password inválido');
       return res.status(404).json({
-        message: "Correo o password invalido (password)",
+        mensaje: "Correo o password invalido (password)",
       });
     }
 
-    const token = await generarToken(usuario._id, usuario.username, usuario.role)
+    console.log('🎫 Generando token...');
+    const token = await generarToken(usuario._id, usuario.username, usuario.role);
+    console.log('🎫 Token generado:', token ? 'Sí' : 'No');
 
+    console.log('🍪 Configurando cookie...');
     res.cookie('jwt',token,{
       httpOnly:true,
       sameSite:true,
       maxAge: 3600000 //1 hora
-    })
+    });
 
+    console.log('✅ Login exitoso, enviando respuesta...');
     res.status(200).json({
       mensaje: "Login exitoso",
       user: {
@@ -119,10 +141,14 @@ export const login = async (req, res) => {
         role: usuario.role,
         preferences: usuario.preferences
       }
-    })
+    });
   } catch (error) {
-    console.log(error);
-    res.status(404).json("Error al loguear un usuario");
+    console.error('💥 Error en login:', error);
+    console.error('💥 Stack trace:', error.stack);
+    res.status(500).json({
+      mensaje: "Error al loguear el usuario",
+      error: error.message
+    });
   }
 };
 
