@@ -7,6 +7,7 @@ import 'dotenv/config';
 import './src/database/dbConnection.js';
 import userRoutes from './src/routes/users.routes.js';
 import productRoutes from './src/routes/products.routes.js';
+import salesRoutes from './src/routes/sales.routes.js';
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api', userRoutes, productRoutes);
+app.use('/api', userRoutes, productRoutes, salesRoutes );
 app.set('port', process.env.PORT || 4000);
 app.listen(app.get('port'), () => {
     console.log(`Servidor en el puerto ${app.get('port')}`);
