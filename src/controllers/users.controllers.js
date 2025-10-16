@@ -35,6 +35,53 @@ export const crearUsuario = async (req, res) => {
   }
 };
 
+// Controlador específico para registro público (siempre crea usuarios con rol 'user')
+export const registrarUsuario = async (req, res) => {
+  try {
+    // Validar que todos los campos requeridos estén presentes
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        mensaje: "Todos los campos son requeridos (username, email, password)"
+      });
+    }
+
+    // Verificar si el usuario ya existe
+    const usuarioExistente = await User.findOne({ email: req.body.email });
+    if (usuarioExistente) {
+      return res.status(400).json({
+        mensaje: "El correo electrónico ya está registrado",
+      });
+    }
+
+    // Crear usuario con rol forzado a 'user' (no se permite desde el frontend)
+    const usuarioNuevo = new User({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      role: 'user' // Siempre 'user' para registro público
+    });
+    
+    const salt = bcrypt.genSaltSync();
+    usuarioNuevo.password = bcrypt.hashSync(usuarioNuevo.password, salt);
+    await usuarioNuevo.save();
+    
+    res.status(201).json({
+      mensaje: "Usuario registrado exitosamente. Ya puedes iniciar sesión.",
+      user: {
+        username: usuarioNuevo.username,
+        email: usuarioNuevo.email,
+        role: usuarioNuevo.role
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      mensaje: "Error interno del servidor al registrar usuario",
+    });
+  }
+};
+
 export const obtenerUnUsuario = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');

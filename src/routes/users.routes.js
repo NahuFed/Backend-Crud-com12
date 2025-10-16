@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { obtenerUsuarios, crearUsuario,actualizarUsuario,eliminarUsuario, obtenerUnUsuario, login, logout, getMe  } from '../controllers/users.controllers';
+import { obtenerUsuarios, crearUsuario, actualizarUsuario, eliminarUsuario, obtenerUnUsuario, login, logout, getMe, registrarUsuario  } from '../controllers/users.controllers';
 import validarUsuario from '../helpers/validarUsuario';
 import verificarToken from '../auth/token-verify.js';
 import verificarRol from '../auth/verificar-rol.js';
@@ -18,6 +18,10 @@ router.route('/users/:id')
 
 router.route('/login')
     .post(login);  // Login no necesita token (obviamente)
+
+// Ruta pública para registro (siempre crea usuarios con rol 'user')
+router.route('/register')
+    .post(validarUsuario, registrarUsuario);
 
 // Ruta para verificar si el token es válido (para el frontend)
 router.route('/verify')
