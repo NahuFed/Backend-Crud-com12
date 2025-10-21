@@ -12,13 +12,17 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@babel/core": "^7.28.4",
     "@babel/node": "^7.28.0",
-    "nodemon": "^3.1.10"
+    "@babel/preset-env": "^7.28.3",
+    "jsdoc": "^4.0.4",
+    "jsdoc-babel": "^0.5.0",
+    "minami": "^1.2.3",
+    "nodemon": "^3.1.10",
+    "taffydb": "^2.7.3"
   },
   "dependencies": {
     "@babel/cli": "^7.28.3",
-    "@babel/core": "^7.28.3",
-    "@babel/preset-env": "^7.28.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
