@@ -2,7 +2,7 @@
     import resultadoValidacion from "./resultadoValidacion"
 
     const validarUsuario = [
-            check("name")
+            check("username")
             .notEmpty()
             .withMessage("El nombre del usuario es obligatorio")
             ,
