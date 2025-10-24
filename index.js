@@ -9,6 +9,9 @@ import userRoutes from './src/routes/users.routes.js';
 import productRoutes from './src/routes/products.routes.js';
 import authRoutes from './src/routes/auth.routes.js';
 import salesRoutes from './src/routes/sales.routes.js';
+import tableRoutes from './src/routes/tables.routes.js';
+import orderRoutes from './src/routes/orders.routes.js';
+import reportsRoutes from './src/routes/reports.routes.js';
 
 const app = express();
 
@@ -23,7 +26,7 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api', userRoutes, productRoutes, salesRoutes);
+app.use('/api', userRoutes, productRoutes, salesRoutes, tableRoutes, orderRoutes, reportsRoutes);
 app.use('/api/auth', authRoutes);
 app.set('port', process.env.PORT || 4000);
 app.listen(app.get('port'), () => {

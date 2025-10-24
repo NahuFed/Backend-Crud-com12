@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec babel-node index.js"
+    "start": "node index.js",
+    "dev": "nodemon --exec babel-node index.js",
+    "seed": "nodemon --exec babel-node src/seed/seed.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
