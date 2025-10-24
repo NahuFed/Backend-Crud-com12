@@ -52,7 +52,9 @@ PORT=4000
 MONGODB_URI=tu_uri_de_mongodb
 
 # JWT
+# Nota: el proyecto usa la variable `JWT_SECRET_KEY` en el código (token-sign/token-verify). Define ambas para compatibilidad:
 JWT_SECRET=tu_secreto_jwt_muy_seguro
+JWT_SECRET_KEY=tu_secreto_jwt_muy_seguro
 
 # Nodemailer - Gmail
 EMAIL_USER=tu.email@gmail.com
@@ -196,6 +198,37 @@ GET    /api/sales/:id               # Obtener venta por ID
 POST   /api/sales                   # Crear venta
 ```
 
+### Mesas
+
+```
+GET    /api/tables                  # Obtener todas las mesas
+GET    /api/tables/:id              # Obtener mesa por ID
+POST   /api/tables                  # Crear mesa (admin)
+PATCH  /api/tables/:id              # Actualizar mesa (admin)
+DELETE /api/tables/:id              # Eliminar mesa (admin)
+POST   /api/tables/:id/reserve      # Reservar mesa
+```
+
+### Órdenes / Comandas
+
+```
+GET    /api/orders                  # Obtener todas las órdenes (admin)
+GET    /api/orders/:id              # Obtener orden por ID
+POST   /api/orders                  # Crear orden (mozo)
+PATCH  /api/orders/:id              # Actualizar orden (admin)
+DELETE /api/orders/:id              # Eliminar orden (admin)
+```
+
+### Reportes (ventas)
+
+```
+GET    /api/reports/sales/daily?days=7      # Ventas por día (últimos n días, default 7)
+GET    /api/reports/sales/by-product        # Ventas por producto (cantidad y facturación)
+GET    /api/reports/sales/by-employee       # Ventas por empleado (total facturado y conteo de ventas)
+```
+
+Los endpoints de reportes requieren rol `admin`.
+
 ## 🔒 Roles y Permisos
 
 - **user**: Usuario regular (puede ver productos, hacer compras)
@@ -207,6 +240,10 @@ POST   /api/sales                   # Crear venta
 ```bash
 npm start          # Iniciar servidor en producción
 npm run dev        # Iniciar servidor en desarrollo (con nodemon)
+```
+
+```bash
+npm run seed       # Poblar la base de datos con datos de ejemplo (desarrollo)
 ```
 
 ## 📝 Notas de desarrollo
