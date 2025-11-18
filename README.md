@@ -226,7 +226,7 @@ npm run dev        # Iniciar servidor en desarrollo (con nodemon)
 
 ## 📄 Licencia
 
-Este proyecto es parte del curso de la UTN - Tecnicatura Universitaria en Programación.
+Este proyecto es parte del curso de la UTN - Tecnicatura Universitaria en Programación Materia Programacion 4.
 
 ## 👥 Autores
 
