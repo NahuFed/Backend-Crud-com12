@@ -172,10 +172,12 @@ export const login = async (req, res) => {
     console.log('🎫 Token generado:', token ? 'Sí' : 'No');
 
     console.log('🍪 Configurando cookie...');
+    console.log('🌍 NODE_ENV:', process.env.NODE_ENV);
     res.cookie('jwt',token,{
       httpOnly: true,
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       secure: process.env.NODE_ENV === 'production',
+      path: '/',
       maxAge: 3600000 //1 hora
     });
 
@@ -230,6 +232,7 @@ export const logout = (req, res) => {
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     secure: process.env.NODE_ENV === 'production',
+    path: '/',
     expires: new Date(0)
   })
   res.status(200).json({
