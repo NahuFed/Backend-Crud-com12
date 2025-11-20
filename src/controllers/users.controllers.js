@@ -173,8 +173,9 @@ export const login = async (req, res) => {
 
     console.log('🍪 Configurando cookie...');
     res.cookie('jwt',token,{
-      httpOnly:true,
-      sameSite:true,
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 3600000 //1 hora
     });
 
@@ -226,8 +227,9 @@ export const getMe = async (req, res) => {
 
 export const logout = (req, res) => {
   res.cookie('jwt','',{
-    httpOnly:true,
-    sameSite:true,
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production',
     expires: new Date(0)
   })
   res.status(200).json({
